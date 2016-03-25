@@ -3,18 +3,22 @@ Butter Knife
 
 ![Logo](website/static/logo.png)
 
-View "injection" library for Android which uses annotation processing to generate boilerplate code
-for you.
+Field and method binding for Android views which uses annotation processing to generate boilerplate
+code for you.
 
- * Eliminate `findViewById` calls by using `@InjectView` on fields.
- * Group multiple views in a list using `@InjectViews`. Operate on all of them at once with actions,
+ * Eliminate `findViewById` calls by using `@Bind` on fields.
+ * Group multiple views in a list or array. Operate on all of them at once with actions,
    setters, or properties.
  * Eliminate anonymous inner-classes for listeners by annotating methods with `@OnClick` and others.
+ * Eliminate resource lookups by using resource annotations on fields.
 
 ```java
 class ExampleActivity extends Activity {
-  @InjectView(R.id.user) EditText username;
-  @InjectView(R.id.pass) EditText password;
+  @Bind(R.id.user) EditText username;
+  @Bind(R.id.pass) EditText password;
+
+  @BindString(R.string.login_error)
+  String loginErrorMessage;
 
   @OnClick(R.id.submit) void submit() {
     // TODO call server...
@@ -23,8 +27,8 @@ class ExampleActivity extends Activity {
   @Override public void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
     setContentView(R.layout.simple_activity);
-    ButterKnife.inject(this);
-    // TODO Use "injected" views...
+    ButterKnife.bind(this);
+    // TODO Use fields...
   }
 }
 ```
@@ -43,12 +47,49 @@ Download [the latest JAR][2] or grab via Maven:
 <dependency>
   <groupId>com.jakewharton</groupId>
   <artifactId>butterknife</artifactId>
-  <version>6.1.0</version>
+  <version>7.0.1</version>
 </dependency>
 ```
 or Gradle:
 ```groovy
-compile 'com.jakewharton:butterknife:6.1.0'
+compile 'com.jakewharton:butterknife:7.0.1'
+```
+
+For the SNAPSHOT version:
+```xml
+<dependency>
+  <groupId>com.jakewharton</groupId>
+  <artifactId>butterknife</artifactId>
+  <version>8.0.0-SNAPSHOT</version>
+</dependency>
+<dependency>
+  <groupId>com.jakewharton</groupId>
+  <artifactId>butterknife-compiler</artifactId>
+  <version>8.0.0-SNAPSHOT</version>
+  <optional>true</optional>
+</dependency>
+```
+or Gradle:
+```groovy
+buildscript {
+  dependencies {
+    classpath 'com.neenbedankt.gradle.plugins:android-apt:1.8'
+  }
+}
+
+allprojects {
+  repositories {
+    maven { url "https://oss.sonatype.org/content/repositories/snapshots" }
+  }
+}
+```
+```groovy
+apply plugin: 'com.neenbedankt.android-apt'
+
+dependencies {
+  compile 'com.jakewharton:butterknife:8.0.0-SNAPSHOT'
+  apt 'com.jakewharton:butterknife-compiler:8.0.0-SNAPSHOT'
+}
 ```
 
 Snapshots of the development version are available in [Sonatype's `snapshots` repository][snap].

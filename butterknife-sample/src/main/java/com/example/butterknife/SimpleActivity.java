@@ -2,25 +2,29 @@ package com.example.butterknife;
 
 import android.app.Activity;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.view.View;
 import android.view.animation.AlphaAnimation;
 import android.widget.Button;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import butterknife.Unbinder;
+import java.util.List;
+
+import butterknife.Bind;
 import butterknife.ButterKnife;
-import butterknife.InjectView;
-import butterknife.InjectViews;
+import butterknife.ButterKnife.ViewUnbinder;
 import butterknife.OnClick;
 import butterknife.OnItemClick;
 import butterknife.OnLongClick;
-import java.util.List;
 
 import static android.widget.Toast.LENGTH_SHORT;
 
 public class SimpleActivity extends Activity {
   private static final ButterKnife.Action<View> ALPHA_FADE = new ButterKnife.Action<View>() {
-    @Override public void apply(View view, int index) {
+    @Override public void apply(@NonNull View view, int index) {
       AlphaAnimation alphaAnimation = new AlphaAnimation(0, 1);
       alphaAnimation.setFillBefore(true);
       alphaAnimation.setDuration(500);
@@ -29,16 +33,18 @@ public class SimpleActivity extends Activity {
     }
   };
 
-  @InjectView(R.id.title) TextView title;
-  @InjectView(R.id.subtitle) TextView subtitle;
-  @InjectView(R.id.hello) Button hello;
-  @InjectView(R.id.list_of_things) ListView listOfThings;
-  @InjectView(R.id.footer) TextView footer;
+  @Bind(R.id.title) TextView title;
+  @Bind(R.id.subtitle) TextView subtitle;
+  @Bind(R.id.hello) Button hello;
+  @Bind(R.id.list_of_things) ListView listOfThings;
+  @Bind(R.id.footer) TextView footer;
+  @Unbinder ViewUnbinder unbinder;
 
-  @InjectViews({ R.id.title, R.id.subtitle, R.id.hello })
+  @Bind({ R.id.title, R.id.subtitle, R.id.hello })
   List<View> headerViews;
 
   private SimpleAdapter adapter;
+
 
   @OnClick(R.id.hello) void sayHello() {
     Toast.makeText(this, "Hello, views!", LENGTH_SHORT).show();
@@ -57,11 +63,11 @@ public class SimpleActivity extends Activity {
   @Override protected void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
     setContentView(R.layout.simple_activity);
-    ButterKnife.inject(this);
+    ButterKnife.bind(this);
 
-    // Contrived code to use the "injected" views.
+    // Contrived code to use the bound fields.
     title.setText("Butter Knife");
-    subtitle.setText("View \"injection\" for Android.");
+    subtitle.setText("Field and method binding for Android views.");
     footer.setText("by Jake Wharton");
     hello.setText("Say Hello");
 
